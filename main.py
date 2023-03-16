@@ -1,42 +1,27 @@
-import os
-
-import telegram
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, updater
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,CallbackContext
 import configparser
 import logging
 import redis
 global redis1
 def main():
-    # Load your token and create an Updater for your Bot
-    # config = configparser.ConfigParser()
-    # config.read('config.ini')
-    # updater = Updater(token=(config['TELEGRAM']['ACCESS_TOKEN']), use_context=True)
-    # dispatcher = updater.dispatcher
-    # global redis1
-    # redis1 = redis.Redis(host=(config['REDIS']['HOST']), password=(config['REDIS']
-    # ['PASSWORD']), port=(config['REDIS']['REDISPORT']))
-    updater = Updater(token=(os.environ['ACCESS_TOKEN']), use_context=True)
+# Load your token and create an Updater for your Bot
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    updater = Updater(token=(config['TELEGRAM']['ACCESS_TOKEN']), use_context=True)
     dispatcher = updater.dispatcher
     global redis1
-    redis1 = redis.Redis(host=(os.environ['HOST']), password=(os.environ['PASSWORD']), port=(os.environ['REDISPORT']))
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                        level=logging.INFO)
-    # register a dispatcher to handle message: here we register an echo dispatcher
+    redis1 = redis.Redis(host=(config['REDIS']['HOST']), password=(config['REDIS']['PASSWORD']), port=(config['REDIS']['REDISPORT']))
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+# register a dispatcher to handle message: here we register an echo dispatcher
     echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
     dispatcher.add_handler(echo_handler)
-    # on different commands - answer in Telegram
+# on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("add", add))
     dispatcher.add_handler(CommandHandler("help", help_command))
-    # To start the bot:
-    updater.start_webhook(
-        listen="0.0.0.0",
-        port=int(os.environ.get('PORT')),
-        url_path="https://letsnewchat.herokuapp.com/"
-    )
-    # updater.idle()
-    # updater.bot.setWebhook("https://letsnewchat.herokuapp.com/" + os.environ['ACCESS_TOKEN'])
-
+# To start the bot:
+    updater.start_polling()
+    updater.idle()
 def echo(update, context):
     reply_message = update.message.text.upper()
     logging.info("Update: " + str(update))
@@ -55,9 +40,8 @@ def add(update: Update, context: CallbackContext) -> None:
         msg = context.args[0] # /add keyword <-- this should store the keyword
         redis1.incr(msg)
         update.message.reply_text('You have said ' + msg + ' for ' +
-                                  redis1.get(msg).decode('UTF-8') + ' times.')
+                          redis1.get(msg).decode('UTF-8') + ' times.')
     except (IndexError, ValueError):
         update.message.reply_text('Usage: /add <keyword>')
-#
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
