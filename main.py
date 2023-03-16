@@ -30,7 +30,7 @@ def main():
         port=int(os.getenv('PORT')),
         webhook_url="https://letsnewchat.herokuapp.com/"
     )
-    updater.idle()
+#    updater.idle()
 def echo(update, context):
     reply_message = update.message.text.upper()
     logging.info("Update: " + str(update))
