@@ -1,3 +1,5 @@
+import os
+
 import openai
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,CallbackContext
@@ -8,15 +10,16 @@ global redis1
 def main():
 # Load your token and create an Updater for your Bot
 # Set OpenAI API Secret Key
-    openai.api_key = "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"
+    openai.api_key = os.environ['OPENAI_TOKEN']
     MODEL_ID = "text-davinci-003"
 
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    updater = Updater(token=(config['TELEGRAM']['ACCESS_TOKEN']), use_context=True)
+    # config = configparser.ConfigParser()
+    # config.read('config.ini')
+    updater = Updater(token=(os.environ['ACCESS_TOKEN']), use_context=True)
     dispatcher = updater.dispatcher
     global redis1
-    redis1 = redis.Redis(host=(config['REDIS']['HOST']), password=(config['REDIS']['PASSWORD']), port=(config['REDIS']['REDISPORT']))
+    redis1 = redis.Redis(host=(os.environ['HOST']), password=(os.environ['PASSWORD']), port=(os.environ['REDISPORT']))
+
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 # register a dispatcher to handle message: here we register an echo dispatcher
 #     echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
