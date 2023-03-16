@@ -8,7 +8,7 @@ global redis1
 def main():
 # Load your token and create an Updater for your Bot
 # Set OpenAI API Secret Key
-    openai.api_key = "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"
+    openai.api_key = "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"
     MODEL_ID = "text-davinci-003"
 
     config = configparser.ConfigParser()
