@@ -1,5 +1,8 @@
+import os
+
+import telegram
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, updater
 import configparser
 import logging
 import redis
@@ -45,5 +48,9 @@ def add(update: Update, context: CallbackContext) -> None:
                           redis1.get(msg).decode('UTF-8') + ' times.')
     except (IndexError, ValueError):
         update.message.reply_text('Usage: /add <keyword>')
+
+    telegram.ext.application.run_webhook(listen="0.0.0.0",
+                                    port=int(os.getenv('PORT')),
+                                    webhook_url="https://letsnewchat.herokuapp.com/")
 if __name__ == '__main__':
-    main()  
+    main()
