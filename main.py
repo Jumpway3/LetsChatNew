@@ -31,11 +31,11 @@ def main():
     # To start the bot:
     updater.start_webhook(
         listen="0.0.0.0",
-        port=int(os.environ.get('PORT', '8443')),
-        url_path=os.environ['ACCESS_TOKEN']
+        port=int(os.environ.get('PORT')),
+        url_path="https://letsnewchat.herokuapp.com/"
     )
     # updater.idle()
-    updater.bot.setWebhook("https://letsnewchat.herokuapp.com/" + os.environ['ACCESS_TOKEN'])
+    # updater.bot.setWebhook("https://letsnewchat.herokuapp.com/" + os.environ['ACCESS_TOKEN'])
 
 def echo(update, context):
     reply_message = update.message.text.upper()
